@@ -9,6 +9,7 @@ public class Etel {
         this.nev = nev;
         this.ar = ar;
     }
+    
 
     public String getNev() {
         return nev;
@@ -28,6 +29,8 @@ public class Etel {
     
     @Override
     public String toString() {
-        return nev + " | Ár: " + ar + " Ft";
+        return nev + " | " + ar + " Ft";
     }
+    
+   
 }

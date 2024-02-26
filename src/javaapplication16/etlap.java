@@ -4,11 +4,18 @@
  */
 package javaapplication16;
 
-import controller.EtelController;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+import javax.swing.ButtonModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListModel;
 import model.Etel;
+import model.Rendeles;
 
 /**
  *
@@ -19,10 +26,20 @@ public class etlap extends javax.swing.JFrame {
     /**
      * Creates new form etlap
      */
-    
-    EtelController etel = new EtelController();
+    Etel etel;
+    Rendeles feher = new Rendeles("Fehér");
+    Rendeles piros = new Rendeles("Piros");
+    Rendeles kek = new Rendeles("Kék");
+    Rendeles zold = new Rendeles("Zöld");
+
     public etlap() {
         initComponents();
+
+        jRadioButton1.setActionCommand("Piros");
+        jRadioButton2.setActionCommand("Zöld");
+        jRadioButton4.setActionCommand("Kék");
+        jRadioButton3.setActionCommand("Fehér");
+
     }
 
     /**
@@ -36,6 +53,7 @@ public class etlap extends javax.swing.JFrame {
 
         jMenu1 = new javax.swing.JMenu();
         jTextField1 = new javax.swing.JTextField();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -48,6 +66,7 @@ public class etlap extends javax.swing.JFrame {
         jRadioButton4 = new javax.swing.JRadioButton();
         rendelesMentGomb = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         ZöldAsztalPanel = new javax.swing.JPanel();
@@ -97,8 +116,6 @@ public class etlap extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         arTextField = new javax.swing.JTextField();
         ujEtelGomb = new javax.swing.JButton();
-        jPanel10 = new javax.swing.JPanel();
-        jPanel11 = new javax.swing.JPanel();
 
         jMenu1.setText("jMenu1");
 
@@ -116,6 +133,11 @@ public class etlap extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Ételek"));
 
+        EtelekjList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Babgulyás", "Rántott sajt", "Gyümölcsleves", "Bécsi szelet", "Somlói galuska" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         jScrollPane1.setViewportView(EtelekjList);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -135,6 +157,7 @@ public class etlap extends javax.swing.JFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Aszatlok"));
 
+        buttonGroup1.add(jRadioButton1);
         jRadioButton1.setText("Piros");
         jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,10 +165,13 @@ public class etlap extends javax.swing.JFrame {
             }
         });
 
+        buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText("Zöld");
 
+        buttonGroup1.add(jRadioButton3);
         jRadioButton3.setText("Fehér");
 
+        buttonGroup1.add(jRadioButton4);
         jRadioButton4.setText("Kék");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -184,6 +210,13 @@ public class etlap extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
+        jButton4.setText("Kiirat");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -193,6 +226,8 @@ public class etlap extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(rendelesMentGomb, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
@@ -213,7 +248,9 @@ public class etlap extends javax.swing.JFrame {
                         .addComponent(rendelesMentGomb, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(12, 12, 12)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)))
                 .addContainerGap(313, Short.MAX_VALUE))
         );
@@ -643,38 +680,6 @@ public class etlap extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Új étel", jPanel5);
 
-        jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Rendelés összesítő"));
-
-        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
-        jPanel11.setLayout(jPanel11Layout);
-        jPanel11Layout.setHorizontalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel11Layout.setVerticalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(103, 103, 103)
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(366, Short.MAX_VALUE))
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(360, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("Blokk", jPanel10);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -692,44 +697,96 @@ public class etlap extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
-   
-    private void etelTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_etelTextFieldActionPerformed
-
-       
-    }//GEN-LAST:event_etelTextFieldActionPerformed
-
-    private void ujEtelGombActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ujEtelGombActionPerformed
-         etel.hozaadEtel(new Etel(etelTextField.getText(), Integer.parseInt(arTextField.getText())));
-         etelTextField.setText("");
-         arTextField.setText("");
-    }//GEN-LAST:event_ujEtelGombActionPerformed
-
     private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-       etlapFiel.setText(etel.getEtelekLista());
-  
-        
+        /*etlapFiel.setText(etel.getEtelekLista());
+
         DefaultListModel dlm = new DefaultListModel();
-      
+
         dlm.addElement(etel.getLista());
         System.out.println(etel.getLista());
-       
-    
-       EtelekjList.setModel(dlm);
-      
 
-       
+        EtelekjList.setModel(dlm);*/
+
     }//GEN-LAST:event_jTabbedPane1MouseClicked
 
-    private void rendelesMentGombActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rendelesMentGombActionPerformed
-        
-    }//GEN-LAST:event_rendelesMentGombActionPerformed
+    private void ujEtelGombActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ujEtelGombActionPerformed
+        new Etel(etelTextField.getText(), Integer.parseInt(arTextField.getText()));
+        etelTextField.setText("");
+        arTextField.setText("");
+    }//GEN-LAST:event_ujEtelGombActionPerformed
+
+    private void etelTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_etelTextFieldActionPerformed
+
+    }//GEN-LAST:event_etelTextFieldActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void rendelesMentGombActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rendelesMentGombActionPerformed
+        String asztal = buttonGroup1.getSelection().getActionCommand();
+        String etel = EtelekjList.getSelectedValue();
+        System.out.println("A kiválasztott étel: " + etel);
+        System.out.println("A kiválasztott asztal: " + asztal);
+        switch (asztal) {
+            case "Piros":
+                piros.hozzaAd(new Etel(etel, 0));
+                break;
+            case "Kék":
+                kek.hozzaAd(new Etel(etel, 0));
+                break;
+            case "Zöld":
+                zold.hozzaAd(new Etel(etel, 0));
+                break;
+            case "Fehér":
+                feher.hozzaAd(new Etel(etel, 0));
+                System.out.println(feher.toString());
+                break;
+        }
+
+
+    }//GEN-LAST:event_rendelesMentGombActionPerformed
+
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Rendelesek.txt", false))) {
+            writer.write(piros.getAsztal() + "\n" + piros.getRendelesek() + "\n");
+            writer.write(zold.getAsztal() + "\n" + zold.getRendelesek() + "\n");
+            writer.write(kek.getAsztal() + "\n" + kek.getRendelesek() + "\n");
+            writer.write(feher.getAsztal() + "\n" + feher.getRendelesek() + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String filePath = "Rendelesek.txt";
+
+        try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
+            stream.forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /*try (BufferedWriter writer = new BufferedWriter(new FileWriter("Rendelesek.txt", false))) {
+            writer.write("\n" + piros.getAsztal() + " asztal: " + "\n================\n" + piros.getRendelesek() + "\n" + "-------------\nÖsszesen: " + piros.getOsszesen() + " Ft \n");
+            writer.write("\n" + zold.getAsztal() + " asztal: " + "\n================\n" + zold.getRendelesek() + "\n" + "-------------\nÖsszesen: " + zold.getOsszesen() + " Ft\n");
+            writer.write("\n" + kek.getAsztal() + " asztal: " + "\n================\n" + kek.getRendelesek() + "\n" + "-------------\nÖsszesen: " + kek.getOsszesen() + " Ft \n");
+            writer.write("\n" + feher.getAsztal() + " asztal: " + "\n================\n" + feher.getRendelesek() + "\n" + "-------------\nÖsszesen: " + feher.getOsszesen() + " Ft\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String filePath = "Rendelesek.txt";
+
+        try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
+            stream.forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -773,11 +830,13 @@ public class etlap extends javax.swing.JFrame {
     private javax.swing.JPanel PirosAsztalPanel;
     private javax.swing.JPanel ZöldAsztalPanel;
     private javax.swing.JTextField arTextField;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JTextField etelTextField;
     private javax.swing.JTextArea etlapFiel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -803,8 +862,6 @@ public class etlap extends javax.swing.JFrame {
     private javax.swing.JList<String> jList9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
